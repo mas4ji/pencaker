@@ -20,12 +20,12 @@
 <body>
     <div class="container">
         <header class="my-5">
-            <h1 class="text-center">Daftar Email Perusahaan s</h1>
+            <h1 class="text-center">Daftar Email Perusahaan</h1>
         </header>
 
         <!-- Form Pencarian -->
         <div class="mb-5">
-            <input type="text" id="searchInput" class="form-control" placeholder="Cari perusahaan (misal: PT)" onkeyup="filterEmails()">
+            <input type="text" id="searchInput" class="form-control" placeholder="Cari perusahaan (misal: PT)" oninput="filterEmails()">
         </div>
 
         <!-- Daftar Email Perusahaan -->
@@ -69,7 +69,7 @@
             })
             .catch(error => console.error('Error loading the JSON data:', error));
 
-        // Fungsi untuk mencari perusahaan
+        // Fungsi untuk mencari perusahaan berdasarkan substring
         function filterEmails() {
             let input = document.getElementById('searchInput');
             let filter = input.value.toLowerCase();  // Mengambil input pencarian dan mengubahnya menjadi lowercase
@@ -79,6 +79,7 @@
             // Menyembunyikan atau menampilkan item berdasarkan pencarian
             for (let i = 0; i < emailItems.length; i++) {
                 let companyName = emailItems[i].querySelector('strong').textContent.toLowerCase();  // Menyaring berdasarkan nama perusahaan
+                // Mencari jika input pencarian ada di dalam nama perusahaan
                 if (companyName.includes(filter)) {
                     emailItems[i].style.display = '';  // Menampilkan perusahaan yang cocok
                 } else {
