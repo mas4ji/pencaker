@@ -139,13 +139,11 @@
                     const emailItem = document.createElement('div');
                     emailItem.classList.add('email-item');
                     emailItem.innerHTML = `
-                    <br>
                         <div class="email-details">
                             <strong>Perusahaan:</strong> ${item.perusahaan}<br>
                             <strong>Email:</strong> 
                             <span id="email-${item.perusahaan.replace(/\s+/g, '')}">${item.email}</span>
                         </div>
-                        <br>
                         <div class="email-actions">
                             <button class="btn btn-primary" onclick="applyJob('${item.email}')">
                                 <i class="bi bi-envelope"></i>
