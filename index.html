@@ -15,9 +15,19 @@
             border: 1px solid #ddd;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
-        .email-item button {
-            margin-left: 10px;
+        .email-details {
+            flex-grow: 1;
+        }
+        .email-actions {
+            display: flex;
+            gap: 10px;
+        }
+        .email-item:hover {
+            background-color: #f8f9fa;
         }
         .search-container {
             display: flex;
@@ -26,9 +36,6 @@
         }
         .search-container input {
             flex-grow: 1;
-        }
-        .email-item:hover {
-            background-color: #f8f9fa;
         }
         .notification {
             display: none;
@@ -83,13 +90,19 @@
                     const emailItem = document.createElement('div');
                     emailItem.classList.add('email-item');
                     emailItem.innerHTML = `
-                        <strong>Perusahaan:</strong> ${item.perusahaan}<br>
-                        <strong>Email:</strong> 
-                        <span id="email-${item.perusahaan.replace(/\s+/g, '')}">${item.email}</span>
-                        <button class="btn btn-primary mt-2" onclick="applyJob('${item.email}')">Kirim Email</button>
-                        <button class="btn btn-secondary mt-2" data-clipboard-target="#email-${item.perusahaan.replace(/\s+/g, '')}">
-                            <i class="bi bi-clipboard"></i> Salin
-                        </button>
+                        <div class="email-details">
+                            <strong>Perusahaan:</strong> ${item.perusahaan}<br>
+                            <strong>Email:</strong> 
+                            <span id="email-${item.perusahaan.replace(/\s+/g, '')}">${item.email}</span>
+                        </div>
+                        <div class="email-actions">
+                            <button class="btn btn-primary" onclick="applyJob('${item.email}')">
+                                <i class="bi bi-envelope"></i>
+                            </button>
+                            <button class="btn btn-secondary" data-clipboard-target="#email-${item.perusahaan.replace(/\s+/g, '')}">
+                                <i class="bi bi-clipboard"></i>
+                            </button>
+                        </div>
                     `;
                     emailList.appendChild(emailItem);
                 });
@@ -110,7 +123,7 @@
 
             // Menyembunyikan atau menampilkan item berdasarkan pencarian
             for (let i = 0; i < emailItems.length; i++) {
-                let companyName = emailItems[i].querySelector('strong').textContent.toLowerCase();
+                let companyName = emailItems[i].querySelector('.email-details').textContent.toLowerCase();
                 if (companyName.includes(filter)) {
                     emailItems[i].style.display = '';
                 } else {
