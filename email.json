@@ -1,0 +1,18 @@
+[
+  {
+    "perusahaan": "PT ABC",
+    "email": "hrd@ptabc.com"
+  },
+  {
+    "perusahaan": "PT XYZ",
+    "email": "careers@ptxyz.com"
+  },
+  {
+    "perusahaan": "PT MNO",
+    "email": "hr@mno.com"
+  },
+  {
+    "perusahaan": "PT DEF",
+    "email": "recruitment@ptdef.com"
+  }
+]
