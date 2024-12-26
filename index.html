@@ -12,7 +12,7 @@
         /* Styling untuk item email */
         .email-item {
             margin-bottom: 20px;
-            padding: 20px;
+            padding: 15px;
             border: 1px solid #ddd;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -20,6 +20,7 @@
             justify-content: space-between;
             align-items: center;
             background-color: #fff;
+            position: relative;
         }
 
         /* Menyusun detail email di kiri dan tombol di kanan */
@@ -33,7 +34,7 @@
             gap: 15px;
         }
 
-        /* Mengatur margin dan padding untuk tombol */
+        /* Styling untuk tombol */
         .email-item button {
             margin: 0;
         }
@@ -75,13 +76,25 @@
             }
 
             .email-actions {
-                justify-content: flex-start;
                 width: 100%;
+                justify-content: flex-end;
             }
 
             .search-container {
                 flex-direction: column;
                 gap: 10px;
+            }
+        }
+
+        /* Responsif lebih lanjut untuk perangkat mobile */
+        @media (max-width: 480px) {
+            .email-actions {
+                justify-content: space-between; /* Menyebarkan tombol jika di perangkat mobile */
+                width: 100%;
+            }
+
+            .email-item {
+                padding: 10px;
             }
         }
     </style>
