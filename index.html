@@ -10,17 +10,10 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <style>
         .email-item {
-            margin-bottom: 15px;
-            border: 1px solid #ddd;
-            padding: 10px;
-            border-radius: 5px;
-            background-color: #f9f9f9;
+            margin-bottom: 10px;
         }
         .email-item button {
             margin-left: 10px;
-        }
-        .email-item h5 {
-            margin: 0;
         }
     </style>
 </head>
@@ -55,15 +48,14 @@
             .then(response => response.json())
             .then(data => {
                 const emailList = document.getElementById('emailList');
-                
-                // Menambahkan elemen daftar email setelah data dimuat
                 data.forEach(item => {
+                    // Buat elemen baru untuk setiap perusahaan dan email
                     const emailItem = document.createElement('div');
                     emailItem.classList.add('email-item');
                     emailItem.innerHTML = `
-                        <h5>Perusahaan: ${item.perusahaan}</h5>
+                        <strong>Perusahaan:</strong> ${item.perusahaan}<br>
                         <strong>Email:</strong> 
-                        <span id="email-${item.perusahaan.replace(/\s+/g, '')}">${item.email}</span><br>
+                        <span id="email-${item.perusahaan.replace(/\s+/g, '')}">${item.email}</span>
                         <button class="btn btn-primary mt-2" onclick="applyJob('${item.email}')">Kirim Email</button>
                         <button class="btn btn-secondary mt-2" data-clipboard-target="#email-${item.perusahaan.replace(/\s+/g, '')}">
                             <i class="bi bi-clipboard"></i> Salin
@@ -86,7 +78,7 @@
 
             // Menyembunyikan atau menampilkan item berdasarkan pencarian
             for (let i = 0; i < emailItems.length; i++) {
-                let companyName = emailItems[i].querySelector('h5').textContent.toLowerCase();  // Menyaring berdasarkan nama perusahaan
+                let companyName = emailItems[i].querySelector('strong').textContent.toLowerCase();  // Menyaring berdasarkan nama perusahaan
                 // Mencari jika input pencarian ada di dalam nama perusahaan
                 if (companyName.includes(filter)) {
                     emailItems[i].style.display = '';  // Menampilkan perusahaan yang cocok
