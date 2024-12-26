@@ -20,7 +20,7 @@
 <body>
     <div class="container">
         <header class="my-5">
-            <h1 class="text-center">Daftar Email Perusahaan</h1>
+            <h1 class="text-center">Daftar Email Perusahaan s</h1>
         </header>
 
         <!-- Form Pencarian -->
@@ -44,7 +44,7 @@
     <!-- Script untuk mengambil data dari file JSON dan menambah interaksi -->
     <script>
         // Fungsi untuk memuat daftar email dari file JSON
-        fetch('emails.json')
+        fetch('https://username.github.io/daftar-email-perusahaan/emails.json')  // Gantilah username sesuai dengan username GitHub kamu
             .then(response => response.json())
             .then(data => {
                 const emailList = document.getElementById('emailList');
@@ -72,17 +72,17 @@
         // Fungsi untuk mencari perusahaan
         function filterEmails() {
             let input = document.getElementById('searchInput');
-            let filter = input.value.toLowerCase();
+            let filter = input.value.toLowerCase();  // Mengambil input pencarian dan mengubahnya menjadi lowercase
             let emailList = document.getElementById('emailList');
-            let emailItems = emailList.getElementsByClassName('email-item');
+            let emailItems = emailList.getElementsByClassName('email-item');  // Mengambil semua elemen email
 
             // Menyembunyikan atau menampilkan item berdasarkan pencarian
             for (let i = 0; i < emailItems.length; i++) {
-                let companyName = emailItems[i].querySelector('strong').textContent.toLowerCase();
+                let companyName = emailItems[i].querySelector('strong').textContent.toLowerCase();  // Menyaring berdasarkan nama perusahaan
                 if (companyName.includes(filter)) {
-                    emailItems[i].style.display = '';
+                    emailItems[i].style.display = '';  // Menampilkan perusahaan yang cocok
                 } else {
-                    emailItems[i].style.display = 'none';
+                    emailItems[i].style.display = 'none';  // Menyembunyikan perusahaan yang tidak cocok
                 }
             }
         }
