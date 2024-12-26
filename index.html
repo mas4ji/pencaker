@@ -135,25 +135,29 @@
             .then(data => {
                 const emailList = document.getElementById('emailList');
                 data.forEach(item => {
-                    // Buat elemen baru untuk setiap perusahaan dan email
-                    const emailItem = document.createElement('div');
-                    emailItem.classList.add('email-item');
-                    emailItem.innerHTML = `
-                        <div class="email-details">
-                            <strong>Perusahaan:</strong> ${item.perusahaan}<br>
-                            <strong>Email:</strong> 
-                            <span id="email-${item.perusahaan.replace(/\s+/g, '')}">${item.email}</span>
-                        </div>
-                        <div class="email-actions">
-                            <button class="btn btn-primary" onclick="applyJob('${item.email}')">
-                                <i class="bi bi-envelope"></i>
-                            </button>
-                            <button class="btn btn-secondary" data-clipboard-target="#email-${item.perusahaan.replace(/\s+/g, '')}">
-                                <i class="bi bi-clipboard"></i>
-                            </button>
-                        </div>
-                    `;
-                    emailList.appendChild(emailItem);
+                    // Cek apakah ada email yang tersedia dalam array emails
+                    if (item.emails && item.emails.length > 0) {
+                        item.emails.forEach(email => {
+                            // Buat elemen baru untuk setiap perusahaan dan email
+                            const emailItem = document.createElement('div');
+                            emailItem.classList.add('email-item');
+                            emailItem.innerHTML = `
+                                <div class="email-details">
+                                    <strong>Perusahaan:</strong> ${item.perusahaan}<br>
+                                    <strong>Email:</strong> <span>${email}</span>
+                                </div>
+                                <div class="email-actions">
+                                    <button class="btn btn-primary" onclick="applyJob('${email}')">
+                                        <i class="bi bi-envelope"></i>
+                                    </button>
+                                    <button class="btn btn-secondary" data-clipboard-target="#email-${item.perusahaan.replace(/\s+/g, '')}">
+                                        <i class="bi bi-clipboard"></i>
+                                    </button>
+                                </div>
+                            `;
+                            emailList.appendChild(emailItem);
+                        });
+                    }
                 });
 
                 // Inisialisasi ClipboardJS untuk tombol Salin
