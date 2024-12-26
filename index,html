@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Email Perusahaan</title>
+    <!-- Link ke Bootstrap CSS dari CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Link ke Bootstrap Icons untuk ikon salin -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        /* Styling untuk item email */
+        .email-item {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #fff;
+            position: relative;
+        }
+
+        /* Styling untuk detail email dan tombol salin */
+        .email-details {
+            flex-grow: 1;
+        }
+
+        .email-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+        }
+
+        .email-item button {
+            margin: 0;
+        }
+
+        .email-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        /* Styling untuk kolom pencarian */
+        .search-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .search-container input {
+            flex-grow: 1;
+        }
+
+        /* Notifikasi Salin */
+        .notification {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background-color: #28a745;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Responsif untuk perangkat kecil */
+        @media (max-width: 768px) {
+            .email-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .email-actions {
+                width: 100%;
+                justify-content: flex-end;
+            }
+
+            .search-container {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+
+        /* Responsif untuk perangkat mobile */
+        @media (max-width: 480px) {
+            .email-actions {
+                justify-content: space-between;
+                width: 100%;
+            }
+
+            .email-item {
+                padding: 10px;
+            }
+        }
+
+        /* Tema gelap */
+        body.dark-mode {
+            background-color: #121212;
+            color: white;
+        }
+
+        .dark-mode .email-item {
+            background-color: #333;
+            border-color: #444;
+        }
+
+        .dark-mode .email-item:hover {
+            background-color: #444;
+        }
+
+        .dark-mode .search-container input {
+            background-color: #444;
+            color: white;
+        }
+
+        .dark-mode .search-container button {
+            background-color: #555;
+            color: white;
+        }
+
+        .dark-mode .notification {
+            background-color: #17a2b8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="my-5 text-center">
+            <h1>Daftar Email Perusahaan</h1>
+        </header>
+
+        <!-- Tombol untuk mengubah tema -->
+        <button class="btn btn-secondary" onclick="toggleDarkMode()">Ganti Tema</button>
+
+        <!-- Form Pencarian dan Filter Lanjutan -->
+        <div class="mb-4 search-container">
+            <input type="text" id="searchInput" class="form-control" placeholder="Cari perusahaan atau email..." onkeyup="filterEmails()">
+            <button class="btn btn-secondary" onclick="clearSearch()">Hapus Pencarian</button>
+        </div>
+
+        <!-- Daftar Email Perusahaan -->
+        <div id="emailList">
+            <!-- Daftar email akan dimuat di sini -->
+        </div>
+        
+        <!-- Notifikasi Salin -->
+        <div id="notification" class="notification">Email telah disalin!</div>
+    </div>
+
+    <!-- Link ke Bootstrap JS dan dependensi -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+    
+    <!-- Link ke ClipboardJS -->
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.10/dist/clipboard.min.js"></script>
+
+    <script>
+        let emailData = [];
+
+        // Fungsi untuk memuat daftar email dari file JSON
+        function loadEmails() {
+            const timestamp = new Date().getTime();  // Menambahkan parameter timestamp untuk cache-busting
+            fetch(`emails.json?${timestamp}`)
+                .then(response => response.json())
+                .then(data => {
+                    emailData = data;
+                    displayEmails(emailData); // Display the emails after loading
+                })
+                .catch(error => console.error('Error loading the JSON data:', error));
+        }
+
+        // Fungsi untuk menampilkan email, menghapus duplikat
+        function displayEmails(data) {
+            const emailList = document.getElementById('emailList');
+            emailList.innerHTML = '';  // Clear existing email list
+
+            const uniqueEmails = [];
+            data.forEach(item => {
+                if (item.emails && item.emails.length > 0) {
+                    item.emails.forEach(email => {
+                        if (!uniqueEmails.includes(email)) {
+                            uniqueEmails.push(email);
+                            const emailItem = document.createElement('div');
+                            emailItem.classList.add('email-item');
+                            emailItem.innerHTML = `
+                                <div class="email-details">
+                                    <strong>Perusahaan:</strong> ${item.perusahaan}<br>
+                                    <strong>Email:</strong> <span>${email}</span>
+                                </div>
+                                <div class="email-actions">
+                                    <button class="btn btn-primary" onclick="applyJob('${email}')">
+                                        <i class="bi bi-envelope"></i>
+                                    </button>
+                                    <button class="btn btn-secondary" data-clipboard-target="#email-${item.perusahaan.replace(/\s+/g, '')}">
+                                        <i class="bi bi-clipboard"></i>
+                                    </button>
+                                </div>
+                            `;
+                            emailList.appendChild(emailItem);
+                        }
+                    });
+                }
+            });
+
+            // Inisialisasi ClipboardJS untuk tombol Salin setelah elemen dimuat
+            new ClipboardJS('.btn-secondary').on('success', function(e) {
+                showNotification();
+            });
+        }
+
+        // Fungsi untuk mencari perusahaan atau email
+        function filterEmails() {
+            let input = document.getElementById('searchInput');
+            let filter = input.value.toLowerCase();
+            let filteredData = emailData.filter(item => {
+                return item.perusahaan.toLowerCase().includes(filter) || 
+                    item.emails.some(email => email.toLowerCase().includes(filter));
+            });
+            displayEmails(filteredData);
+        }
+
+        // Fungsi untuk menghapus pencarian
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            displayEmails(emailData);
+        }
+
+        // Fungsi untuk membuka aplikasi email (Gmail, Outlook, dll.)
+        function applyJob(email) {
+            window.location.href = `mailto:${email}`;
+        }
+
+        // Fungsi untuk menampilkan notifikasi salin
+        function showNotification() {
+            const notification = document.getElementById('notification');
+            notification.style.display = 'block';
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 2000);
+        }
+
+        // Fungsi untuk toggle antara tema gelap dan terang
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+        }
+
+        // Memanggil fungsi loadEmails saat halaman dimuat
+        loadEmails();
+    </script>
+
+    <!-- Footer -->
+    <footer style="text-align: center;">
+        <p>Gerai CV Murah 2025</p>
+    </footer>
+</body>
+</html>
