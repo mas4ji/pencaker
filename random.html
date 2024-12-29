@@ -41,6 +41,23 @@
             border-radius: 5px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
+
+        /* Styling untuk tombol kembali */
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        /* Styling khusus untuk tombol kirim di kiri */
+        .btn-left {
+            align-self: flex-start; /* Tombol Kirim berada di kiri */
+        }
+
+        /* Styling khusus untuk tombol kembali di kanan */
+        .btn-right {
+            align-self: flex-end; /* Tombol Kembali berada di kanan */
+        }
     </style>
 </head>
 <body>
@@ -81,7 +98,13 @@
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-primary">Kirim Email</button>
+                <div class="button-container">
+                    <!-- Tombol Kirim Email (Posisi kiri) -->
+                    <button type="submit" class="btn btn-primary btn-left">Kirim Email</button>
+
+                    <!-- Tombol Kembali (Posisi kanan) -->
+                    <a href="https://mas4ji.github.io/pencaker" class="btn btn-secondary btn-right">Kembali</a>
+                </div>
             </form>
         </div>
 
@@ -122,7 +145,7 @@
             });
 
             // Menyimpan email penerima dalam variabel global untuk digunakan saat kirim email
-            window.emailRecipients = emailRecipients.join(',');
+            window.emailRecipients = emailRecipients;
         }
 
         // Fungsi untuk menerapkan template email
@@ -183,10 +206,15 @@ Hormat saya,
 
             const subject = document.getElementById('subjectInput').value;
             const body = document.getElementById('bodyInput').value;
-            const emailList = window.emailRecipients;
 
-            // Menyusun mailto link dengan subjek, body, dan email penerima yang sudah terisi
-            const mailtoLink = `mailto:${emailList}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            // Ambil email pertama untuk bagian "To"
+            const toEmail = window.emailRecipients[0];
+
+            // Ambil sisanya untuk BCC
+            const bccEmails = window.emailRecipients.slice(1).join(',');
+
+            // Menyusun mailto link dengan subjek, body, email penerima, dan BCC
+            const mailtoLink = `mailto:${toEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}&bcc=${encodeURIComponent(bccEmails)}`;
             window.location.href = mailtoLink;  // Membuka aplikasi email
 
             // Menampilkan notifikasi setelah kirim
