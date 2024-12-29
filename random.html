@@ -111,7 +111,7 @@
             });
 
             // Menyimpan email penerima dalam variabel global untuk digunakan saat kirim email
-            window.emailRecipients = emailRecipients.join(',');
+            window.emailRecipients = emailRecipients;
         }
 
         // Fungsi untuk mengirim email massal
@@ -122,9 +122,17 @@
             const body = document.getElementById('bodyInput').value;
             const emailList = window.emailRecipients;
 
-            // Menyusun mailto link dengan subjek, body, dan email penerima yang sudah terisi
-            const mailtoLink = `mailto:${emailList}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-            window.location.href = mailtoLink;  // Membuka aplikasi email
+            if (emailList.length > 0) {
+                // Ambil email pertama untuk kolom "To"
+                const toEmail = emailList[0];
+
+                // Ambil email sisanya untuk kolom "BCC"
+                const bccEmails = emailList.slice(1).join(',');
+
+                // Menyusun mailto link dengan subjek, body, dan email penerima yang sudah terisi
+                const mailtoLink = `mailto:${toEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}&bcc=${encodeURIComponent(bccEmails)}`;
+                window.location.href = mailtoLink;  // Membuka aplikasi email
+            }
 
             // Menampilkan notifikasi setelah kirim
             showNotification();
