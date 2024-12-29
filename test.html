@@ -3,33 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kirim Email Massal</title>
+    <title>Daftar Email Perusahaan</title>
+    <!-- Link ke Bootstrap CSS dari CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Link ke Bootstrap Icons untuk ikon salin dan sosial media -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <style>
-        /* Styling untuk body email dan daftar penerima */
-        .email-list-container {
-            margin-top: 20px;
+        /* Styling untuk item email */
+        .email-item {
             margin-bottom: 20px;
-        }
-
-        .email-list {
-            background-color: #f8f9fa;
-            padding: 10px;
-            border-radius: 5px;
+            padding: 15px;
             border: 1px solid #ddd;
-            height: 150px;
-            overflow-y: auto;
-            white-space: nowrap;
-            word-wrap: break-word;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #fff;
+            position: relative;
         }
 
-        .email-list span {
-            display: block;
-            margin-bottom: 5px;
-            font-size: 14px;
+        /* Styling untuk detail email dan tombol salin */
+        .email-details {
+            flex-grow: 1;
         }
 
-        /* Styling untuk notifikasi */
+        .email-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .email-item button {
+            margin: 0;
+        }
+
+        .email-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        /* Styling untuk kolom pencarian */
+        .search-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .search-container input {
+            flex-grow: 1;
+            margin-bottom: 10px;
+        }
+
+        /* Notifikasi Salin */
         .notification {
             display: none;
             position: fixed;
@@ -42,186 +69,148 @@
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
-        /* Styling untuk tombol kembali */
-        .button-container {
+        /* Styling untuk footer */
+        footer {
+            margin-top: 30px;
             display: flex;
-            justify-content: space-between;
-            margin-top: 20px;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
         }
 
-        /* Styling khusus untuk tombol kirim di kiri */
-        .btn-left {
-            align-self: flex-start; /* Tombol Kirim berada di kiri */
+        footer p {
+            margin: 0;
         }
 
-        /* Styling khusus untuk tombol kembali di kanan */
-        .btn-right {
-            align-self: flex-end; /* Tombol Kembali berada di kanan */
+        footer .social-icons {
+            display: flex;
+            gap: 20px;
         }
+
+        footer .social-icons a {
+            color: #333;
+            font-size: 24px;
+        }
+
     </style>
 </head>
 <body>
     <div class="container">
-        <header class="my-5 text-center">
-            <h1>Kirim Email Massal</h1>
+        <header>
+            <h1>Daftar Email Perusahaan</h1>
         </header>
 
-        <!-- Form Kirim Email Massal -->
-        <div class="mb-4">
-            <form id="bulkEmailForm" onsubmit="sendBulkEmail(event)">
-                <div class="mb-3">
-                    <label for="subjectInput" class="form-label">Subjek:</label>
-                    <input type="text" id="subjectInput" class="form-control" required>
-                </div>
-
-                <!-- Pilih Template Email -->
-                <div class="mb-3">
-                    <label for="templateSelect" class="form-label">Pilih Template:</label>
-                    <select id="templateSelect" class="form-control" onchange="applyTemplate()">
-                        <option value="">Pilih Template</option>
-                        <option value="template1">Template 1</option>
-                        <option value="template2">Template 2</option>
-                    </select>
-                </div>
-
-                <!-- Isi Email -->
-                <div class="mb-3">
-                    <label for="bodyInput" class="form-label">Isi Email:</label>
-                    <textarea id="bodyInput" class="form-control" rows="4" required></textarea>
-                </div>
-
-                <!-- Daftar Email Penerima (read-only) -->
-                <div class="email-list-container">
-                    <label class="form-label">Daftar Email Penerima:</label>
-                    <div id="emailList" class="email-list" readonly>
-                        <!-- Daftar email akan muncul di sini -->
-                    </div>
-                </div>
-
-                <div class="button-container">
-                    <!-- Tombol Kirim Email (Posisi kiri) -->
-                    <button type="submit" class="btn btn-primary btn-left">Kirim Email</button>
-
-                    <!-- Tombol Kembali (Posisi kanan) -->
-                    <a href="https://mas4ji.github.io/pencaker" class="btn btn-secondary btn-right">Kembali</a>
-                </div>
-            </form>
+        <!-- Menu Kirim Email Massal -->
+        <div class="mb-4 text-center">
+            <a href="random.html" class="btn btn-secondary btn-kirim-massal">Kirim Email Massal</a>
         </div>
 
+        <!-- Form Pencarian dan Filter Lanjutan -->
+        <div class="mb-4 search-container">
+            <input type="text" id="searchInput" class="form-control" placeholder="Cari perusahaan atau email..." onkeyup="filterEmails()">
+            <button class="btn btn-secondary" onclick="clearSearch()">Hapus Pencarian</button>
+        </div>
+
+        <!-- Keterangan Waktu Pembaruan -->
+        <div id="lastUpdated" class="mb-3 text-center">
+            <!-- Keterangan waktu akan dimuat di sini -->
+        </div>
+
+        <!-- Daftar Email Perusahaan -->
+        <div id="emailList">
+            <!-- Daftar email akan dimuat di sini -->
+        </div>
+        
         <!-- Notifikasi Salin -->
         <div id="notification" class="notification">Email telah disalin!</div>
     </div>
 
-    <script>
-        let emailData = [];  // Variabel untuk menyimpan data email
+    <!-- Link ke Bootstrap JS dan dependensi -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+    
+    <!-- Link ke ClipboardJS -->
+    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.10/dist/clipboard.min.js"></script>
 
-        // Fungsi untuk memuat email dari emails.json
+    <script>
+        let emailData = [];
+        let lastUpdateTime = new Date();
+
+        // Fungsi untuk memuat daftar email dari file JSON
         function loadEmails() {
             const timestamp = new Date().getTime();  // Menambahkan parameter timestamp untuk cache-busting
             fetch(`emails.json?${timestamp}`)
                 .then(response => response.json())
                 .then(data => {
                     emailData = data;
-                    displayEmailList();  // Tampilkan email setelah data dimuat
+                    displayEmails(emailData); // Display the emails after loading
+                    updateLastUpdatedTime(); // Update the last updated time
                 })
                 .catch(error => console.error('Error loading the JSON data:', error));
         }
 
-        // Fungsi untuk menampilkan daftar email penerima
-        function displayEmailList() {
-            const emailListContainer = document.getElementById('emailList');
-            emailListContainer.innerHTML = '';  // Bersihkan daftar email sebelumnya
+        // Fungsi untuk menampilkan email, menghapus duplikat
+        function displayEmails(data) {
+            const emailList = document.getElementById('emailList');
+            emailList.innerHTML = '';  // Clear existing email list
 
-            const emailRecipients = [];
-            emailData.forEach(item => {
+            const uniqueEmails = [];
+            data.forEach(item => {
                 if (item.emails && item.emails.length > 0) {
                     item.emails.forEach(email => {
-                        emailRecipients.push(email);
-                        const emailItem = document.createElement('span');
-                        emailItem.textContent = email;
-                        emailListContainer.appendChild(emailItem);
+                        if (!uniqueEmails.includes(email)) {
+                            uniqueEmails.push(email);
+                            const emailItem = document.createElement('div');
+                            emailItem.classList.add('email-item');
+                            emailItem.innerHTML = ` 
+                                <div class="email-details">
+                                    <strong>Perusahaan:</strong> ${item.perusahaan}<br>
+                                    <strong>Email:</strong> <span>${email}</span>
+                                </div>
+                                <div class="email-actions">
+                                    <button class="btn btn-primary" onclick="applyJob('${email}')">
+                                        <i class="bi bi-envelope"></i>
+                                    </button>
+                                    <button class="btn btn-secondary" data-clipboard-target="#email-${item.perusahaan.replace(/\s+/g, '')}">
+                                        <i class="bi bi-clipboard"></i>
+                                    </button>
+                                </div>
+                            `;
+                            emailList.appendChild(emailItem);
+                        }
                     });
                 }
             });
 
-            // Menyimpan email penerima dalam variabel global untuk digunakan saat kirim email
-            window.emailRecipients = emailRecipients;
+            // Inisialisasi ClipboardJS untuk tombol Salin setelah elemen dimuat
+            new ClipboardJS('.btn-secondary').on('success', function(e) {
+                showNotification();
+            });
         }
 
-        // Fungsi untuk menerapkan template email
-        function applyTemplate() {
-            const templateSelect = document.getElementById('templateSelect');
-            const bodyInput = document.getElementById('bodyInput');
-            
-            if (templateSelect.value === 'template1') {
-                bodyInput.value = `
-Kepada Yth, 
-Bapak/Ibu HRD Manager
-PT. XXXX XXXX XXXX
-
-Dengan hormat,
-Berdasarkan informasi yang saya dapat di Jejaring Media Sosial pada tanggal 10 september 2022,bahwa perusahaan yang Bapak/Ibu pimpin sedang membutuhkan karyawan sebagai Operator Produksi,maka dengan ini saya mengajukan lamaran untuk mengisi lowongan pekerjaan tersebut.Adapun biodata singkat saya sebagai berikut :
-
-1).Nama : 
-2).Tempat,tanggal lahir : 
-3).Jenis kelamin :
-4).Pendidikan terakhir : 
-5).Alamat : XXXXX
-6).Pengalaman Kerja : Pernah Bekerja Sebagai Operator Produksi Selama 1 tahun.
-
-Sebagai bahan pertimbangan telah saya lampirkan CV dan berkas pendukung lainya dalam bentuk file pdf pada attachment email ini
-
-Demikianlah lamaran kerja ini saya buat dengan besar harapan saya dapat bergabung menjadi salah satu karyawan di perusahaan yang Bapak/Ibu Pimpin dan atas perhatiannya saya mengucapkan terima kasih.
-
-Hormat saya,
-[Nama Kamu Disini]
-Hp/Wa 0812XXXXXX
-                `;
-            } else if (templateSelect.value === 'template2') {
-                bodyInput.value = `
-Dengan hormat,
-
-Sesuai dengan informasi dari media sosial di internet, bahwa perusahaan yang Bapak / Ibu pimpin membutuhkan lowongan pekerjaan sebagai Operator Produksi, maka dengan ini Saya :
-Nama                       : 
-Tempat/Tgl. Lahir  :
-Alamat                     : 
-Pendidikan              :
-Jurusan                   : 
-NO HP                      : 
-
-
-Bermaksud untuk mengisi lowongan pada pekerjaan tersebut . Sebagai bahan pertimbangan saya lampirkan satu lembar daftar riwayat hidup dan data pendukung lainnya dalam bentuk attachment.
-
-Demikian surat permohonan lamaran kerja ini saya ajukan, Besar harapan saya untuk di beri kesempatan wawancara dan dapat menjelaskan lebih mendalam mengenai potensi saya seperti tersirat di dalam Curriculum Vitae Yang Saya Lampirkan.Atas perhatian dan kesempatan yang diberikan saya ucapkan terima kasih.
-
-Hormat saya,
-[Nama lengkap]
-                `;
-            }
+        // Fungsi untuk mencari perusahaan atau email
+        function filterEmails() {
+            let input = document.getElementById('searchInput');
+            let filter = input.value.toLowerCase();
+            let filteredData = emailData.filter(item => {
+                return item.perusahaan.toLowerCase().includes(filter) || 
+                    item.emails.some(email => email.toLowerCase().includes(filter));
+            });
+            displayEmails(filteredData);
         }
 
-        // Fungsi untuk mengirim email massal
-        function sendBulkEmail(event) {
-            event.preventDefault(); // Mencegah form submit standar
-
-            const subject = document.getElementById('subjectInput').value;
-            const body = document.getElementById('bodyInput').value;
-
-            // Ambil email pertama untuk bagian "To"
-            const toEmail = window.emailRecipients[0];
-
-            // Ambil sisanya untuk BCC
-            const bccEmails = window.emailRecipients.slice(1).join(',');
-
-            // Menyusun mailto link dengan subjek, body, email penerima, dan BCC
-            const mailtoLink = `mailto:${toEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}&bcc=${encodeURIComponent(bccEmails)}`;
-            window.location.href = mailtoLink;  // Membuka aplikasi email
-
-            // Menampilkan notifikasi setelah kirim
-            showNotification();
+        // Fungsi untuk menghapus pencarian
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            displayEmails(emailData);
         }
 
-        // Fungsi untuk menampilkan notifikasi
+        // Fungsi untuk membuka aplikasi email (Gmail, Outlook, dll.)
+        function applyJob(email) {
+            window.location.href = `mailto:${email}`;
+        }
+
+        // Fungsi untuk menampilkan notifikasi salin
         function showNotification() {
             const notification = document.getElementById('notification');
             notification.style.display = 'block';
@@ -230,8 +219,34 @@ Hormat saya,
             }, 2000);
         }
 
+        // Fungsi untuk mengupdate waktu terakhir pembaruan
+        function updateLastUpdatedTime() {
+            const lastUpdatedDiv = document.getElementById('lastUpdated');
+            const currentTime = new Date();
+            const formattedTime = currentTime.toLocaleString('id-ID', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: 'numeric',
+                minute: 'numeric',
+                second: 'numeric'
+            });
+
+            lastUpdatedDiv.innerHTML = `Terupdate terakhir pada: ${formattedTime}`;
+        }
+
         // Memanggil fungsi loadEmails saat halaman dimuat
         loadEmails();
     </script>
+
+    <!-- Footer -->
+    <footer>
+        <p>Gerai CV Murah 2025</p>
+        <div class="social-icons">
+            <a href="https://wa.me/1234567890" target="_blank"><i class="bi bi-whatsapp"></i></a>
+            <a href="https://instagram.com/yourinstagram" target="_blank"><i class="bi bi-instagram"></i></a>
+        </div>
+    </footer>
 </body>
 </html>
