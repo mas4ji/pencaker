@@ -5,6 +5,43 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kirim Email Massal</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Styling untuk body email dan daftar penerima */
+        .email-list-container {
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        .email-list {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            height: 150px;
+            overflow-y: auto;
+            white-space: nowrap;
+            word-wrap: break-word;
+        }
+
+        .email-list span {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        /* Styling untuk notifikasi */
+        .notification {
+            display: none;
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background-color: #28a745;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -19,28 +56,91 @@
                     <label for="subjectInput" class="form-label">Subjek:</label>
                     <input type="text" id="subjectInput" class="form-control" required>
                 </div>
+
                 <div class="mb-3">
-                    <label for="emailListInput" class="form-label">Daftar Email Penerima:</label>
-                    <textarea id="emailListInput" class="form-control" rows="4" placeholder="Pisahkan email dengan koma..." required></textarea>
+                    <label for="bodyInput" class="form-label">Isi Email:</label>
+                    <textarea id="bodyInput" class="form-control" rows="4" required></textarea>
                 </div>
+
+                <!-- Daftar Email Penerima (read-only) -->
+                <div class="email-list-container">
+                    <label class="form-label">Daftar Email Penerima:</label>
+                    <div id="emailList" class="email-list" readonly>
+                        <!-- Daftar email akan muncul di sini -->
+                    </div>
+                </div>
+
                 <button type="submit" class="btn btn-primary">Kirim Email</button>
             </form>
         </div>
 
         <!-- Notifikasi Salin -->
-        <div id="notification" class="notification" style="display: none;">Email telah disalin!</div>
+        <div id="notification" class="notification">Email telah disalin!</div>
     </div>
 
     <script>
+        let emailData = [];  // Variabel untuk menyimpan data email
+
+        // Fungsi untuk memuat email dari emails.json
+        function loadEmails() {
+            const timestamp = new Date().getTime();  // Menambahkan parameter timestamp untuk cache-busting
+            fetch(`emails.json?${timestamp}`)
+                .then(response => response.json())
+                .then(data => {
+                    emailData = data;
+                    displayEmailList();  // Tampilkan email setelah data dimuat
+                })
+                .catch(error => console.error('Error loading the JSON data:', error));
+        }
+
+        // Fungsi untuk menampilkan daftar email penerima
+        function displayEmailList() {
+            const emailListContainer = document.getElementById('emailList');
+            emailListContainer.innerHTML = '';  // Bersihkan daftar email sebelumnya
+
+            const emailRecipients = [];
+            emailData.forEach(item => {
+                if (item.emails && item.emails.length > 0) {
+                    item.emails.forEach(email => {
+                        emailRecipients.push(email);
+                        const emailItem = document.createElement('span');
+                        emailItem.textContent = email;
+                        emailListContainer.appendChild(emailItem);
+                    });
+                }
+            });
+
+            // Menyimpan email penerima dalam variabel global untuk digunakan saat kirim email
+            window.emailRecipients = emailRecipients.join(',');
+        }
+
+        // Fungsi untuk mengirim email massal
         function sendBulkEmail(event) {
             event.preventDefault(); // Mencegah form submit standar
-            const subject = document.getElementById('subjectInput').value;
-            const emailListInput = document.getElementById('emailListInput').value;
-            const emailRecipients = emailListInput.split(',').map(email => email.trim()).join(',');
 
-            // Membuka aplikasi email dengan data yang dimasukkan
-            window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&to=${encodeURIComponent(emailRecipients)}`;
+            const subject = document.getElementById('subjectInput').value;
+            const body = document.getElementById('bodyInput').value;
+            const emailList = window.emailRecipients;
+
+            // Menyusun mailto link dengan subjek, body, dan email penerima yang sudah terisi
+            const mailtoLink = `mailto:${emailList}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            window.location.href = mailtoLink;  // Membuka aplikasi email
+
+            // Menampilkan notifikasi setelah kirim
+            showNotification();
         }
+
+        // Fungsi untuk menampilkan notifikasi
+        function showNotification() {
+            const notification = document.getElementById('notification');
+            notification.style.display = 'block';
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 2000);
+        }
+
+        // Memanggil fungsi loadEmails saat halaman dimuat
+        loadEmails();
     </script>
 </body>
 </html>
