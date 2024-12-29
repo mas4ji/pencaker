@@ -151,7 +151,7 @@
         }
     </style>
 </head>
-<body>
+<body class="dark-mode">
     <div class="container">
         <header>
             <h1>Daftar Email Perusahaan</h1>
@@ -160,11 +160,6 @@
         <!-- Menu Kirim Email Massal -->
         <div class="mb-4 text-center">
             <a href="kirim-massal.html" class="btn btn-secondary btn-kirim-massal">Kirim Email Massal</a>
-        </div>
-
-        <!-- Tombol untuk mengubah tema -->
-        <div class="mb-4 text-center">
-            <button class="btn btn-secondary" onclick="toggleDarkMode()">Ganti Tema</button>
         </div>
 
         <!-- Form Pencarian dan Filter Lanjutan -->
@@ -272,11 +267,6 @@
             setTimeout(() => {
                 notification.style.display = 'none';
             }, 2000);
-        }
-
-        // Fungsi untuk toggle antara tema gelap dan terang
-        function toggleDarkMode() {
-            document.body.classList.toggle('dark-mode');
         }
 
         // Memanggil fungsi loadEmails saat halaman dimuat
