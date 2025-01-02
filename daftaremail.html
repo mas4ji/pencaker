@@ -133,7 +133,9 @@
         </header>
 
         <!-- Menu Kirim Email Massal -->
-  
+        <div class="mb-4 text-center">
+            <a href="random.html" class="btn btn-secondary btn-kirim-massal">Kirim Email Massal</a>
+        </div>
 
         <!-- Form Pencarian dan Filter Lanjutan -->
         <div class="mb-4 search-container">
@@ -197,6 +199,11 @@
                                     <button class="btn btn-secondary" data-clipboard-target="#email-${item.perusahaan.replace(/\s+/g, '')}">
                                         <i class="bi bi-clipboard"></i>
                                     </button>
+                                     <!-- Tombol pencarian Google -->
+                               <a class="btn btn-danger" href="https://www.google.com/search?q=intitle%3Aloker%20${encodeURIComponent(item.perusahaan)}" target="_blank">
+    <i class="bi bi-google"></i> Cari
+</a>
+
                                 </div>
                             `;
                             emailList.appendChild(emailItem);
